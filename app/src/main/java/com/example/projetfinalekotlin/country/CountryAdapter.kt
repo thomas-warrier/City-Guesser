@@ -26,14 +26,10 @@ class CountryAdapter(
         }
 
 
-
-
-
-        holder.name.text = country.name
-        if (country.logoPath.isBlank()) {
+        holder.name.text = country.country
+        if (country.flag.isBlank()) {
             holder.countryLogo.setImageResource(R.drawable.default_flag)
         }
-
     }
 
 

@@ -3,6 +3,7 @@ package com.example.projetfinalekotlin.country
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
 
 class CountryActivity : AppCompatActivity() {
@@ -15,10 +16,16 @@ class CountryActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        val result = Klaxon().parseArray<Country>(Countries.countriesString)
 
-        binding.recycleView.apply {
-            adapter = CountryAdapter(mutableListOf(Country("Test1", ""), Country("test2", "")))
-            layoutManager = LinearLayoutManager(this@CountryActivity)
+
+
+        result?.let {
+
+            binding.recycleView.apply {
+                adapter = CountryAdapter(it.toMutableList())
+                layoutManager = LinearLayoutManager(this@CountryActivity)
+            }
 
         }
 

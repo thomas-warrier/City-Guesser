@@ -1,6 +1,7 @@
 package com.example.projetfinalekotlin.country
 
 data class Country(
-    val name: String,
-    val logoPath: String
+    val country: String = "",
+    val code: String = "",
+    val flag: String = ""
 )
