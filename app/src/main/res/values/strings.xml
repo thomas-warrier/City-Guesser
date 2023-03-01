@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ProjetFinaleKotlin</string>
+    <string name="recherche_hint">Recherche…</string>
+    <string name="drapeau_correspondant_au_pays">Drapeau correspondent au pays</string>
 </resources>
