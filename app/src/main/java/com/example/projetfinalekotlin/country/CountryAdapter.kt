@@ -2,17 +2,26 @@ package com.example.projetfinalekotlin.country
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.R
+import com.squareup.picasso.Picasso
 
 class CountryAdapter(
-    val countryList: List<Country>,
+    val countryList: MutableList<Country>,
     val onClick: (country: Country) -> Unit
 ) :
     RecyclerView.Adapter<CountryViewHolder>() {
 
-    val filtredList: MutableList<Country> = countryList.toMutableList()
+    companion object {
+        private const val URLImage = "https://www.countryflagsapi.com/png/"
+    }
+
+    val filtredList: MutableList<Country>
+
+    init {
+        countryList.removeAll { c -> c.code.isBlank() || c.country.isBlank() }
+        filtredList = countryList.toMutableList()
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
@@ -27,6 +36,15 @@ class CountryAdapter(
         holder.view.setOnClickListener {
             onClick(country)
         }
+
+        Picasso.get().load("$URLImage${country.code}").apply {
+            error(R.drawable.default_flag)
+            into(holder.countryLogo)
+            placeholder(R.drawable.default_flag)
+        }
+
+
+
 
 
         holder.name.text = country.country
