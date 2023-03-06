@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.R
 
 class CountryAdapter(
-    val list: MutableList<Country>,
+    val countryList: List<Country>,
 ) :
     RecyclerView.Adapter<CountryViewHolder>() {
+
+    val filtredList: MutableList<Country> = countryList.toMutableList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
@@ -20,7 +22,7 @@ class CountryAdapter(
     }
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
-        val country = list[position]
+        val country = filtredList[position]
         holder.view.setOnClickListener {
             Toast.makeText(it.context, "Click $position", Toast.LENGTH_SHORT).show()
         }
@@ -32,9 +34,24 @@ class CountryAdapter(
         }
     }
 
+    fun setFilter(filtre: String) {
+        filtredList.clear()
+        if (filtre.isBlank()) {
+            filtredList.addAll(countryList)
+        } else {
+            for (country in countryList) {
+                if (country.country.contains(filtre)) {
+                    filtredList.add(country)
+                }
+            }
+        }
+        notifyDataSetChanged()
+
+    }
+
 
     override fun getItemCount(): Int {
-        return list.size
+        return filtredList.size
     }
 
 }
