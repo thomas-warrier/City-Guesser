@@ -1,12 +1,17 @@
 package com.example.projetfinalekotlin.country
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
+import com.example.projetfinalekotlin.retrofit.GoogleAPI
+import com.example.projetfinalekotlin.retrofit.RetrofitHelper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class CountryActivity : AppCompatActivity() {
@@ -18,6 +23,17 @@ class CountryActivity : AppCompatActivity() {
         binding = ActivityCountryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+
+        //Test
+        val googleAPI = RetrofitHelper.getInstance().create(GoogleAPI::class.java)
+        // launching a new coroutine
+        GlobalScope.launch {
+            val result = googleAPI.getAddress("France")
+            Log.d("API: ", result.body().toString())
+        }
+
+        //end Test
 
         val result = Klaxon().parseArray<Country>(Countries.countriesString)
 
