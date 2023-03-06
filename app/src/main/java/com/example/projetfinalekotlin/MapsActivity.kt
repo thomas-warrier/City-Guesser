@@ -1,7 +1,10 @@
 package com.example.projetfinalekotlin
 
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.Klaxon
+import com.example.projetfinalekotlin.retrofit.Address
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,17 +30,27 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        /*
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(
-            MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney")
-        )
-         */
-        val france = LatLngBounds(LatLng(41.31433, -5.5591), LatLng(51.1241999, 9.6624999))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(france.center, 5f))
-        mMap.setLatLngBoundsForCameraTarget(france)
+        var address: Address? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            address = intent.getSerializableExtra("address", Address::class.java)
+        } else {
+            intent.getStringExtra("address")?.let {
+                address = Klaxon().parse<Address>(it)
+            }
+        }
+        address?.let {
+            if (it.results.isNotEmpty()) {
+                val b = it.results[0].geometry.bounds
+                val bounds = LatLngBounds(
+                    LatLng(b.southwest.lat, b.southwest.lng),
+                    LatLng(b.northeast.lat, b.northeast.lng),
+                )
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.center, 5f))
+                mMap.setLatLngBoundsForCameraTarget(bounds)
+            }
+
+        }
+
+
     }
 }
