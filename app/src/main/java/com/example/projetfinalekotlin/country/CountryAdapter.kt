@@ -8,6 +8,7 @@ import com.example.projetfinalekotlin.R
 
 class CountryAdapter(
     val countryList: List<Country>,
+    val onClick: (country: Country) -> Unit
 ) :
     RecyclerView.Adapter<CountryViewHolder>() {
 
@@ -24,7 +25,7 @@ class CountryAdapter(
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val country = filtredList[position]
         holder.view.setOnClickListener {
-            Toast.makeText(it.context, "Click $position", Toast.LENGTH_SHORT).show()
+            onClick(country)
         }
 
 

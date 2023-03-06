@@ -3,6 +3,7 @@ package com.example.projetfinalekotlin.country
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
@@ -20,7 +21,10 @@ class CountryActivity : AppCompatActivity() {
         val result = Klaxon().parseArray<Country>(Countries.countriesString)
 
         result?.let { countries ->
-            val adapterCountry = CountryAdapter(countries.toList())
+            val adapterCountry = CountryAdapter(countries.toList()) {
+                Toast.makeText(applicationContext, it.country, Toast.LENGTH_SHORT).show()
+
+            }
 
 
             binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
