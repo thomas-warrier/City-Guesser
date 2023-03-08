@@ -38,15 +38,14 @@ class CountryActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, it.countryCode, Toast.LENGTH_SHORT).show()
 
                 GlobalScope.launch {
-                    val resulte = googleAPI.getAddress(it.countryNameFr)
-                    resulte.body()?.let { address ->
-                        val intt = Intent(this@CountryActivity, MapsActivity::class.java)
+                    googleAPI.getAddress(it.countryNameEn).body()?.let { address ->
+                        val mapIntent = Intent(this@CountryActivity, MapsActivity::class.java)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            intt.putExtra("address", address)
+                            mapIntent.putExtra("address", address)
                         } else {
-                            intt.putExtra("address", Klaxon().toJsonString(address))
+                            mapIntent.putExtra("address", Klaxon().toJsonString(address))
                         }
-                        startActivity(intt)
+                        startActivity(mapIntent)
                     }
                 }
 

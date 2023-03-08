@@ -8,9 +8,10 @@ object ImageLoading {
 
     fun loadFlagInto(countryCode: String, imageView: ImageView) {
         Picasso.get().load("${URLImage}${countryCode}").apply {
+            placeholder(R.drawable.default_flag)
             error(R.drawable.default_flag)
             into(imageView)
-            placeholder(R.drawable.default_flag)
+
         }
     }
 }
