@@ -14,6 +14,6 @@ class CountryActivity : AppCompatActivity() {
         binding = ActivityCountryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        println(Utils.getJsonFromKlaxon().toString())
+        Log.i("result",Utils.getJsonFromKlaxon().toString())
     }
 }
