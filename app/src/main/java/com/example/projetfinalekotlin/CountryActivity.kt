@@ -2,6 +2,7 @@ package com.example.projetfinalekotlin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
 
 class CountryActivity : AppCompatActivity() {
@@ -13,6 +14,6 @@ class CountryActivity : AppCompatActivity() {
         binding = ActivityCountryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
+        println(Utils.getJsonFromKlaxon().toString())
     }
 }
