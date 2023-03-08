@@ -3,8 +3,9 @@ package com.example.projetfinalekotlin.country
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.projetfinalekotlin.Country
+import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
-import com.squareup.picasso.Picasso
 
 class CountryAdapter(
     val countryList: MutableList<Country>,
@@ -12,14 +13,10 @@ class CountryAdapter(
 ) :
     RecyclerView.Adapter<CountryViewHolder>() {
 
-    companion object {
-        private const val URLImage = "https://www.countryflagsapi.com/png/"
-    }
-
     val filtredList: MutableList<Country>
 
     init {
-        countryList.removeAll { c -> c.code.isBlank() || c.country.isBlank() }
+        countryList.removeAll { c -> c.countryCode.isBlank() || c.countryNameFr.isBlank() }
         filtredList = countryList.toMutableList()
     }
 
@@ -36,30 +33,22 @@ class CountryAdapter(
         holder.view.setOnClickListener {
             onClick(country)
         }
+        ImageLoading.loadFlagInto(country.countryCode, holder.countryLogo)
 
-        Picasso.get().load("$URLImage${country.code}").apply {
-            error(R.drawable.default_flag)
-            into(holder.countryLogo)
-            placeholder(R.drawable.default_flag)
-        }
-
-
-
-
-
-        holder.name.text = country.country
-        if (country.flag.isBlank()) {
-            holder.countryLogo.setImageResource(R.drawable.default_flag)
-        }
+        holder.name.text = country.countryNameFr
     }
 
-    fun setFilter(filtre: String) {
+    fun setFilter(newFiltre: String) {
+        val filtre = newFiltre.lowercase()
         filtredList.clear()
         if (filtre.isBlank()) {
             filtredList.addAll(countryList)
         } else {
             for (country in countryList) {
-                if (country.country.contains(filtre)) {
+                //recherche en anglais et français
+                if (country.countryNameFr.lowercase()
+                        .contains(filtre) || country.countryNameEn.lowercase().contains(filtre)
+                ) {
                     filtredList.add(country)
                 }
             }

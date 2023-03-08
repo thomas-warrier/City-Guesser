@@ -1,9 +1,7 @@
 package com.example.projetfinalekotlin
 
-import android.content.Context
-import java.io.IOException
-import java.nio.charset.Charset
 import com.beust.klaxon.*
+import com.example.projetfinalekotlin.country.Countries
 import java.io.StringReader
 
 

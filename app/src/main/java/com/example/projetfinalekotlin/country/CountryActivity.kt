@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.MapsActivity
+import com.example.projetfinalekotlin.Utils
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
 import com.example.projetfinalekotlin.retrofit.GoogleAPI
 import com.example.projetfinalekotlin.retrofit.RetrofitHelper
@@ -30,14 +31,14 @@ class CountryActivity : AppCompatActivity() {
         val googleAPI = RetrofitHelper.getInstance().create(GoogleAPI::class.java)
 
 
-        val result = Klaxon().parseArray<Country>(Countries.countriesString)
+        val result = Utils.getJsonFromKlaxon().toMutableList()
 
-        result?.let { countries ->
+        result.let { countries ->
             val adapterCountry = CountryAdapter(countries.toMutableList()) {
-                Toast.makeText(applicationContext, it.code, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, it.countryCode, Toast.LENGTH_SHORT).show()
 
                 GlobalScope.launch {
-                    val resulte = googleAPI.getAddress(it.country)
+                    val resulte = googleAPI.getAddress(it.countryNameFr)
                     resulte.body()?.let { address ->
                         val intt = Intent(this@CountryActivity, MapsActivity::class.java)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
