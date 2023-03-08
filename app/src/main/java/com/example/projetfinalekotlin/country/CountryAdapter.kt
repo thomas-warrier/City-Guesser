@@ -3,7 +3,6 @@ package com.example.projetfinalekotlin.country
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.projetfinalekotlin.Country
 import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
 

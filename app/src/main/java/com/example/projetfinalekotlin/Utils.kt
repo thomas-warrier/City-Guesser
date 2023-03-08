@@ -2,6 +2,7 @@ package com.example.projetfinalekotlin
 
 import com.beust.klaxon.*
 import com.example.projetfinalekotlin.country.Countries
+import com.example.projetfinalekotlin.country.Country
 import java.io.StringReader
 
 

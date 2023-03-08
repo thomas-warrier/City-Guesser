@@ -1,4 +1,4 @@
-package com.example.projetfinalekotlin
+package com.example.projetfinalekotlin.country
 
 import com.beust.klaxon.*
 
