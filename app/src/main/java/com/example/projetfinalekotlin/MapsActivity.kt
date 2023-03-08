@@ -12,6 +12,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -45,10 +47,19 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     LatLng(b.southwest.lat, b.southwest.lng),
                     LatLng(b.northeast.lat, b.northeast.lng),
                 )
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.center, 5f))
-                mMap.setLatLngBoundsForCameraTarget(bounds)
-            }
 
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(0.0, .0), 0f))
+                Timer().schedule(1000) {
+                    runOnUiThread {
+
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0))
+
+                        mMap.setLatLngBoundsForCameraTarget(bounds)
+                    }
+                }
+
+            }
         }
 
 
