@@ -36,11 +36,22 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        // define function to add marker at given lat & lng
+        fun addMarker(latLng: LatLng ) {
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(latLng))
+        }
+
+        mMap.setOnMapClickListener {
+            addMarker(it)
+        }
+
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions()
             .position(sydney)
             .title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val zoomLevel = 3.0f //This goes up to 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, zoomLevel))
     }
 }
