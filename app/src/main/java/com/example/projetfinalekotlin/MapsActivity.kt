@@ -12,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -67,6 +68,17 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
             }
+        }
+
+
+        // define function to add marker at given lat & lng
+        fun addMarker(latLng: LatLng ) {
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(latLng))
+        }
+
+        mMap.setOnMapClickListener {
+            addMarker(it)
         }
 
 
