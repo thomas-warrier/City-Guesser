@@ -7,12 +7,12 @@ import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
 
 class CountryAdapter(
-    val countryList: MutableList<Country>,
+    private val countryList: MutableList<Country>,
     val onClick: (country: Country) -> Unit
 ) :
     RecyclerView.Adapter<CountryViewHolder>() {
 
-    val filtredList: MutableList<Country>
+    private val filtredList: MutableList<Country>
 
     init {
         countryList.removeAll { c -> c.countryCode.isBlank() || c.countryNameFr.isBlank() }
