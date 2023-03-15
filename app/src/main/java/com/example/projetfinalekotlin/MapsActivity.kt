@@ -1,14 +1,20 @@
 package com.example.projetfinalekotlin
 
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.beust.klaxon.Klaxon
+import com.example.projetfinalekotlin.retrofit.Address
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -24,17 +30,39 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        var address: Address? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            address = intent.getSerializableExtra("address", Address::class.java)
+        } else {
+            intent.getStringExtra("address")?.let {
+                address = Klaxon().parse<Address>(it)
+            }
+        }
+        address?.let {
+            if (it.results.isNotEmpty()) {
+                val b = it.results[0].geometry.bounds
+                val bounds = LatLngBounds(
+                    LatLng(b.southwest.lat, b.southwest.lng),
+                    LatLng(b.northeast.lat, b.northeast.lng),
+                )
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(0.0, .0), 0f))
+                Timer().schedule(1000) {
+                    runOnUiThread {
+
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0))
+
+                        mMap.setLatLngBoundsForCameraTarget(bounds)
+                    }
+                }
+
+            }
+        }
+
 
         // define function to add marker at given lat & lng
         fun addMarker(latLng: LatLng ) {
@@ -46,12 +74,6 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             addMarker(it)
         }
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions()
-            .position(sydney)
-            .title("Marker in Sydney"))
-        val zoomLevel = 3.0f //This goes up to 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, zoomLevel))
+
     }
 }
