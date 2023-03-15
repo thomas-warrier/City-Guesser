@@ -12,7 +12,9 @@ import com.example.projetfinalekotlin.MapsActivity
 import com.example.projetfinalekotlin.Utils
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
 import com.example.projetfinalekotlin.retrofit.GoogleAPI
-import com.example.projetfinalekotlin.retrofit.RetrofitHelper
+import com.example.projetfinalekotlin.retrofit.HackerrankAPIAPI
+import com.example.projetfinalekotlin.retrofit.RetrofitGoogleHelper
+import com.example.projetfinalekotlin.retrofit.RetrofitHackerrankHelper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -28,7 +30,8 @@ class CountryActivity : AppCompatActivity() {
         setContentView(view)
 
 
-        val googleAPI = RetrofitHelper.getInstance().create(GoogleAPI::class.java)
+        val googleAPI = RetrofitGoogleHelper.getInstance().create(GoogleAPI::class.java)
+        val capitalAPI = RetrofitHackerrankHelper.getInstance().create(HackerrankAPIAPI::class.java)
 
 
         val result = Utils.getJsonFromKlaxon().toMutableList()
@@ -39,13 +42,28 @@ class CountryActivity : AppCompatActivity() {
 
                 GlobalScope.launch {
                     googleAPI.getAddress(it.countryNameEn).body()?.let { address ->
-                        val mapIntent = Intent(this@CountryActivity, MapsActivity::class.java)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            mapIntent.putExtra("address", address)
-                        } else {
-                            mapIntent.putExtra("address", Klaxon().toJsonString(address))
+                        capitalAPI.getCapital(it.countryNameEn).body()?.let { dataCapital ->
+                            val info = dataCapital.data[0]
+                            googleAPI.getAddress(info.capital).body()?.let { capitalAddress ->
+                                val mapIntent =
+                                    Intent(this@CountryActivity, MapsActivity::class.java)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    mapIntent.putExtra("address", address)
+                                    mapIntent.putExtra("capitalAddress", capitalAddress)
+
+                                } else {
+                                    mapIntent.putExtra("address", Klaxon().toJsonString(address))
+                                    mapIntent.putExtra(
+                                        "capitalAddress",
+                                        Klaxon().toJsonString(capitalAddress)
+                                    )
+                                }
+                                mapIntent.putExtra("capitalName", info.capital)
+                                startActivity(mapIntent)
+                            }
+
+
                         }
-                        startActivity(mapIntent)
                     }
                 }
 

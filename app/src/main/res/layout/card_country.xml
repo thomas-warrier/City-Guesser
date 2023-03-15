@@ -13,20 +13,38 @@
         <ImageView
             android:id="@+id/countryLogo"
             android:layout_width="100dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/drapeau_correspondant_au_pays"
             android:scaleType="centerCrop"
             android:src="@drawable/default_flag"
-            android:contentDescription="@string/drapeau_correspondant_au_pays"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Name"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/countryLogo" />
+            app:layout_constraintStart_toEndOf="@id/countryLogo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nativeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/countryLogo"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+        <TextView
+            android:id="@+id/region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/countryLogo"
+            app:layout_constraintTop_toBottomOf="@id/nativeName" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

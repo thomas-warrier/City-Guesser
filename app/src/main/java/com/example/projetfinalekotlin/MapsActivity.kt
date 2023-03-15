@@ -33,11 +33,18 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         var address: Address? = null
+        var addressCapital: Address? = null
+        val capitalName = intent.getStringExtra("capitalName")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             address = intent.getSerializableExtra("address", Address::class.java)
+            addressCapital = intent.getSerializableExtra("capitalAddress", Address::class.java)
         } else {
             intent.getStringExtra("address")?.let {
                 address = Klaxon().parse<Address>(it)
+            }
+
+            intent.getStringExtra("addressCapital")?.let {
+                addressCapital = Klaxon().parse<Address>(it)
             }
         }
         address?.let {
