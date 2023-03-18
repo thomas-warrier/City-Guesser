@@ -1,5 +1,6 @@
 package com.example.projetfinalekotlin
 
+import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
@@ -94,7 +95,13 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.setOnMapClickListener {
             val distanceEntre = addMarker(it, locationCapital!!)
+
             val distanceArrondie = (distanceEntre/1000).roundToInt()
+            if(distanceArrondie <50){
+                val victoryIntent =
+                    Intent(this@MapsActivity, VictoryActivity::class.java)
+                    startActivity(victoryIntent)
+            }
             map_text_view.setText("Vous êtes à " + distanceArrondie + "km de " + capitalName)
 
         }
