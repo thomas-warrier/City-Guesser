@@ -87,7 +87,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         mMap.setOnMapClickListener {
-            addMarker(it, locationCapital!!)
+            val distanceEntre = addMarker(it, locationCapital!!)
 
         }
 
