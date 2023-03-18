@@ -3,6 +3,7 @@ package com.example.projetfinalekotlin
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.retrofit.Address
@@ -14,9 +15,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
 import kotlin.concurrent.schedule
+import kotlin.math.roundToInt
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -34,10 +37,13 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        mMap.setMapStyle(MapStyleOptions(resources.getString(R.string.map_style)))
         var locationCapital: LongitudeLatitude? = null
         var address: Address? = null
         var addressCapital: Address? = null
         val capitalName = intent.getStringExtra("capitalName")
+        val map_text_view = findViewById<TextView>(R.id.map_text)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             address = intent.getSerializableExtra("address", Address::class.java)
             addressCapital = intent.getSerializableExtra("capitalAddress", Address::class.java)
@@ -88,6 +94,8 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mMap.setOnMapClickListener {
             val distanceEntre = addMarker(it, locationCapital!!)
+            val distanceArrondie = (distanceEntre/1000).roundToInt()
+            map_text_view.setText("Vous êtes à " + distanceArrondie + "km de " + capitalName)
 
         }
 
