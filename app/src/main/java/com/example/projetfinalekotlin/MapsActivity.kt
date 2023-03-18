@@ -1,5 +1,6 @@
 package com.example.projetfinalekotlin
 
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -53,7 +54,6 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 Timer().schedule(1000) {
                     runOnUiThread {
 
-
                         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0))
 
                         mMap.setLatLngBoundsForCameraTarget(bounds)
@@ -65,13 +65,21 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         // define function to add marker at given lat & lng
-        fun addMarker(latLng: LatLng ) {
+        fun addMarker(latLng: LatLng,findCityCoordonate : LatLng ): Float {
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng))
+            val startPoint = Location("locationA")
+            startPoint.latitude = latLng.latitude
+            startPoint.longitude = latLng.longitude
+            val endPoint = Location("locationB")
+            endPoint.latitude = findCityCoordonate.latitude
+            endPoint.longitude = findCityCoordonate.longitude
+            return startPoint.distanceTo(endPoint)
         }
 
         mMap.setOnMapClickListener {
-            addMarker(it)
+            addMarker(it, LatLng(0.0,0.0))
+
         }
 
 
