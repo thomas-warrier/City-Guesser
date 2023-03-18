@@ -97,7 +97,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val distanceEntre = addMarker(it, locationCapital!!)
 
             val distanceArrondie = (distanceEntre/1000).roundToInt()
-            if(distanceArrondie <50){
+            if(distanceArrondie < 50){
                 val victoryIntent =
                     Intent(this@MapsActivity, VictoryActivity::class.java)
                     startActivity(victoryIntent)
