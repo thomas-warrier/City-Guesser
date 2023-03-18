@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.retrofit.Address
+import com.example.projetfinalekotlin.retrofit.LongitudeLatitude
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,6 +37,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         mMap.setMapStyle(MapStyleOptions(resources.getString(R.string.map_style)))
+        var locationCapital: LongitudeLatitude? = null
         var address: Address? = null
         var addressCapital: Address? = null
         val capitalName = intent.getStringExtra("capitalName")
@@ -54,6 +56,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         address?.let {
             if (it.results.isNotEmpty()) {
                 val b = it.results[0].geometry.bounds
+                locationCapital = it.results[0].geometry.location
                 val bounds = LatLngBounds(
                     LatLng(b.southwest.lat, b.southwest.lng),
                     LatLng(b.northeast.lat, b.northeast.lng),
@@ -74,20 +77,20 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         // define function to add marker at given lat & lng
-        fun addMarker(latLng: LatLng,findCityCoordonate : LatLng ): Float {
+        fun addMarker(latLng: LatLng,findCityCoordonate : LongitudeLatitude ): Float {
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(latLng))
             val startPoint = Location("locationA")
             startPoint.latitude = latLng.latitude
             startPoint.longitude = latLng.longitude
             val endPoint = Location("locationB")
-            endPoint.latitude = findCityCoordonate.latitude
-            endPoint.longitude = findCityCoordonate.longitude
+            endPoint.latitude = findCityCoordonate.lat
+            endPoint.longitude = findCityCoordonate.lng
             return startPoint.distanceTo(endPoint)
         }
 
         mMap.setOnMapClickListener {
-            addMarker(it, LatLng(0.0,0.0))
+            val distanceEntre = addMarker(it, locationCapital!!)
 
         }
 

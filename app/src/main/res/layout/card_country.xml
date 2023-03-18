@@ -26,6 +26,7 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fontFamily="@font/roboto"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,6 +35,7 @@
             android:id="@+id/nativeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fontFamily="@font/roboto"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toBottomOf="@id/name" />
@@ -42,6 +44,7 @@
             android:id="@+id/region"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fontFamily="@font/roboto"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toBottomOf="@id/nativeName" />

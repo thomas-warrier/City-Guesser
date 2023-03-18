@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".country.CountryActivity">
 
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="City Guesser"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        app:fontFamily="@font/roboto_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <SearchView
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
@@ -14,7 +27,8 @@
         android:iconifiedByDefault="false"
         android:padding="4dp"
         android:queryHint="@string/recherche_hint"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/app_name"
+        tools:layout_editor_absoluteX="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleView"
