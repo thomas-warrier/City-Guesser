@@ -162,4 +162,6 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         endPoint.longitude = findCityLocation.lng
         return startPoint.distanceTo(endPoint)
     }
+
+    override fun onBackPressed() {}
 }

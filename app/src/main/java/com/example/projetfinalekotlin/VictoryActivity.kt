@@ -35,4 +35,5 @@ class VictoryActivity : AppCompatActivity() {
             finish()
         }
     }
+    override fun onBackPressed() {}
 }

@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class CountryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCountryBinding
+    var adapterCountry: CountryAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,72 +34,75 @@ class CountryActivity : AppCompatActivity() {
         val capitalAPI = RetrofitHackerrankHelper.getInstance().create(HackerrankAPIAPI::class.java)
 
 
-        val result = Utils.getJsonFromKlaxon().toMutableList()
+        val countries = Utils.getJsonFromKlaxon().toMutableList()
 
-        result.let { countries ->
-            val adapterCountry = CountryAdapter(countries.toMutableList()) {
 
-                GlobalScope.launch {
-                    googleAPI.getAddress(it.countryNameEn).body()?.let { address ->
-                        capitalAPI.getCapital(it.countryNameEn).body()?.let { dataCapital ->
-                            val info = dataCapital.data[0]
-                            googleAPI.getAddress(info.capital).body()?.let { capitalAddress ->
-                                val mapIntent =
-                                    Intent(this@CountryActivity, MapsActivity::class.java)
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    mapIntent.putExtra(MapsActivity.ADDRESS_COUNTRY_EXTRA, address)
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_CAPITAL_EXTRA,
-                                        capitalAddress
-                                    )
+        adapterCountry = CountryAdapter(countries.toMutableList()) {
 
-                                } else {
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_COUNTRY_EXTRA,
-                                        Klaxon().toJsonString(address)
-                                    )
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_CAPITAL_EXTRA,
-                                        Klaxon().toJsonString(capitalAddress)
-                                    )
-                                }
-                                mapIntent.putExtra(MapsActivity.CAPITAL_NAME_EXTRA, info.capital)
-                                mapIntent.putExtra(MapsActivity.COUNTRY_CODE_EXTRA, it.countryCode)
-                                startActivity(mapIntent)
+            GlobalScope.launch {
+                googleAPI.getAddress(it.countryNameEn).body()?.let { address ->
+                    capitalAPI.getCapital(it.countryNameEn).body()?.let { dataCapital ->
+                        val info = dataCapital.data[0]
+                        googleAPI.getAddress(info.capital).body()?.let { capitalAddress ->
+                            val mapIntent =
+                                Intent(this@CountryActivity, MapsActivity::class.java)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                mapIntent.putExtra(MapsActivity.ADDRESS_COUNTRY_EXTRA, address)
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_CAPITAL_EXTRA,
+                                    capitalAddress
+                                )
+
+                            } else {
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_COUNTRY_EXTRA,
+                                    Klaxon().toJsonString(address)
+                                )
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_CAPITAL_EXTRA,
+                                    Klaxon().toJsonString(capitalAddress)
+                                )
                             }
-
-
+                            mapIntent.putExtra(MapsActivity.CAPITAL_NAME_EXTRA, info.capital)
+                            mapIntent.putExtra(MapsActivity.COUNTRY_CODE_EXTRA, it.countryCode)
+                            startActivity(mapIntent)
                         }
+
+
                     }
                 }
-
-            }
-
-
-            binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let {
-                        adapterCountry.setFilter(it)
-                    }
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    newText?.let {
-                        adapterCountry.setFilter(it)
-                    }
-                    return true
-                }
-
-            })
-
-            binding.recycleView.apply {
-                adapter = adapterCountry
-                layoutManager = LinearLayoutManager(this@CountryActivity)
             }
 
         }
 
 
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    adapterCountry?.setFilter(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    adapterCountry?.setFilter(it)
+                }
+                return true
+            }
+
+        })
+
+        binding.recycleView.apply {
+            adapter = adapterCountry
+            layoutManager = LinearLayoutManager(this@CountryActivity)
+        }
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        adapterCountry?.notifyDataSetChanged()
     }
 }
