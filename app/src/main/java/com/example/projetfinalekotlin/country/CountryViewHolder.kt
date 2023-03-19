@@ -11,6 +11,7 @@ class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val nativeName: TextView
     val region: TextView
     val countryLogo: ImageView
+    val trophyImage: ImageView
     val view: View
 
 
@@ -20,6 +21,7 @@ class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             nativeName = findViewById(R.id.nativeName)
             region = findViewById(R.id.region)
             countryLogo = findViewById(R.id.countryLogo)
+            trophyImage = findViewById(R.id.trophy_image)
             view = this
         }
 

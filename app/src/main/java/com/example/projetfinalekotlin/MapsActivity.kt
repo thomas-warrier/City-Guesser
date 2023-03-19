@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.Klaxon
+import com.example.projetfinalekotlin.data.SaveData
 import com.example.projetfinalekotlin.retrofit.Address
 import com.example.projetfinalekotlin.retrofit.LongitudeLatitude
 import com.example.projetfinalekotlin.retrofit.Result
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -25,6 +25,13 @@ import kotlin.math.roundToInt
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    companion object {
+        const val ADDRESS_COUNTRY_EXTRA = "addressCountry"
+        const val ADDRESS_CAPITAL_EXTRA = "addressCapital"
+        const val CAPITAL_NAME_EXTRA = "capitalName"
+        const val COUNTRY_CODE_EXTRA = "countryCode"
+    }
 
     private lateinit var mMap: GoogleMap
     private var counterMaker = 0
@@ -47,7 +54,8 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val addressCountryNullable = getAddressCountry()
         val addressCapitalNullable = getAddressCapital()
-        val capitalName = intent.getStringExtra("capitalName")
+        val capitalName = intent.getStringExtra(CAPITAL_NAME_EXTRA)
+        val countryCode = intent.getStringExtra(COUNTRY_CODE_EXTRA)
 
         val mapTextView = findViewById<TextView>(R.id.map_text)
         mapTextView.text = "Posez un marker pour chercher la capital : $capitalName"
@@ -78,9 +86,9 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val distanceArrondie = (distanceEntre / 1000).roundToInt()
                     if (distanceArrondie < 50) {//WIN
-                        startWinActivity(isWin(counterMaker))
+                        startWinActivity(isWin(counterMaker), countryCode)
                     } else if (!isWin(counterMaker)) {//LOOSE
-                        startWinActivity(false)
+                        startWinActivity(false, countryCode)
                     }
                     mapTextView.text = "Vous êtes à ${distanceArrondie}km de $capitalName"
 
@@ -96,9 +104,9 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getAddressCapital(): Result? {
         var address: Address? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            address = intent.getSerializableExtra("capitalAddress", Address::class.java)
+            address = intent.getSerializableExtra(ADDRESS_CAPITAL_EXTRA, Address::class.java)
         } else {
-            intent.getStringExtra("capitalAddress")?.let {
+            intent.getStringExtra(ADDRESS_CAPITAL_EXTRA)?.let {
                 address = Klaxon().parse<Address>(it)
             }
         }
@@ -108,9 +116,9 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getAddressCountry(): Result? {
         var address: Address? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            address = intent.getSerializableExtra("address", Address::class.java)
+            address = intent.getSerializableExtra(ADDRESS_COUNTRY_EXTRA, Address::class.java)
         } else {
-            intent.getStringExtra("address")?.let {
+            intent.getStringExtra(ADDRESS_COUNTRY_EXTRA)?.let {
                 address = Klaxon().parse<Address>(it)
             }
         }
@@ -131,7 +139,10 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return counterMarker < 5
     }
 
-    private fun startWinActivity(isWin: Boolean) {
+    private fun startWinActivity(isWin: Boolean, countryCode: String?) {
+        if (isWin && countryCode != null) {
+            SaveData.putBoolean(applicationContext, countryCode, true)
+        }
         val victoryIntent = Intent(this@MapsActivity, VictoryActivity::class.java)
         victoryIntent.putExtra(VictoryActivity.WIN_EXTRA, isWin)
         startActivity(victoryIntent)

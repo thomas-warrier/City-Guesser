@@ -46,17 +46,24 @@ class CountryActivity : AppCompatActivity() {
                                 val mapIntent =
                                     Intent(this@CountryActivity, MapsActivity::class.java)
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    mapIntent.putExtra("address", address)
-                                    mapIntent.putExtra("capitalAddress", capitalAddress)
+                                    mapIntent.putExtra(MapsActivity.ADDRESS_COUNTRY_EXTRA, address)
+                                    mapIntent.putExtra(
+                                        MapsActivity.ADDRESS_CAPITAL_EXTRA,
+                                        capitalAddress
+                                    )
 
                                 } else {
-                                    mapIntent.putExtra("address", Klaxon().toJsonString(address))
                                     mapIntent.putExtra(
-                                        "capitalAddress",
+                                        MapsActivity.ADDRESS_COUNTRY_EXTRA,
+                                        Klaxon().toJsonString(address)
+                                    )
+                                    mapIntent.putExtra(
+                                        MapsActivity.ADDRESS_CAPITAL_EXTRA,
                                         Klaxon().toJsonString(capitalAddress)
                                     )
                                 }
-                                mapIntent.putExtra("capitalName", info.capital)
+                                mapIntent.putExtra(MapsActivity.CAPITAL_NAME_EXTRA, info.capital)
+                                mapIntent.putExtra(MapsActivity.COUNTRY_CODE_EXTRA, it.countryCode)
                                 startActivity(mapIntent)
                             }
 

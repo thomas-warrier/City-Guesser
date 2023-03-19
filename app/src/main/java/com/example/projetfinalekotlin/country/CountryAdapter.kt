@@ -1,10 +1,12 @@
 package com.example.projetfinalekotlin.country
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
+import com.example.projetfinalekotlin.data.SaveData
 
 class CountryAdapter(
     private val countryList: MutableList<Country>,
@@ -35,6 +37,15 @@ class CountryAdapter(
         ImageLoading.loadFlagInto(country.countryCode, holder.countryLogo)
 
         holder.name.text = country.countryNameFr
+
+        SaveData.getBoolean(holder.view.context, country.countryCode)
+            ?.let { isAlreadyHaveBeenDone ->
+                if (isAlreadyHaveBeenDone) {
+                    holder.trophyImage.visibility = View.VISIBLE
+                } else {
+                    holder.trophyImage.visibility = View.INVISIBLE
+                }
+            }
     }
 
     fun setFilter(newFiltre: String) {
