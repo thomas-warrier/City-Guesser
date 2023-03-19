@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.retrofit.Address
 import com.example.projetfinalekotlin.retrofit.LongitudeLatitude
+import com.example.projetfinalekotlin.retrofit.Result
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -26,6 +27,7 @@ import kotlin.math.roundToInt
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private var counterMaker = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,35 +39,30 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+        counterMaker = 0
         mMap = googleMap
 
         mMap.setMapStyle(MapStyleOptions(resources.getString(R.string.map_style)))
-        var locationCapital: LongitudeLatitude? = null
-        var address: Address? = null
-        var addressCapital: Address? = null
+
+
+        val addressCountryNullable = getAddressCountry()
+        val addressCapitalNullable = getAddressCapital()
         val capitalName = intent.getStringExtra("capitalName")
-        val map_text_view = findViewById<TextView>(R.id.map_text)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            address = intent.getSerializableExtra("address", Address::class.java)
-            addressCapital = intent.getSerializableExtra("capitalAddress", Address::class.java)
-        } else {
-            intent.getStringExtra("address")?.let {
-                address = Klaxon().parse<Address>(it)
-            }
 
-            intent.getStringExtra("addressCapital")?.let {
-                addressCapital = Klaxon().parse<Address>(it)
-            }
-        }
-        address?.let {
-            if (it.results.isNotEmpty()) {
-                val b = it.results[0].geometry.bounds
-                locationCapital = it.results[0].geometry.location
-                val bounds = LatLngBounds(
-                    LatLng(b.southwest.lat, b.southwest.lng),
-                    LatLng(b.northeast.lat, b.northeast.lng),
-                )
+        val mapTextView = findViewById<TextView>(R.id.map_text)
+        mapTextView.text = "Posez un marker pour chercher la capital : $capitalName"
 
+
+        addressCountryNullable?.let { addressCountry ->
+
+            val b = addressCountry.geometry.bounds
+            val bounds = LatLngBounds(
+                LatLng(b.southwest.lat, b.southwest.lng),
+                LatLng(b.northeast.lat, b.northeast.lng),
+            )
+
+            addressCapitalNullable?.let { addressCapital ->
+                val locationCapital = addressCapital.geometry.location
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(0.0, .0), 0f))
                 Timer().schedule(1000) {
                     runOnUiThread {
@@ -76,36 +73,82 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
+                mMap.setOnMapClickListener { posMarker ->
+                    val distanceEntre = addMarker(posMarker, locationCapital)
+
+                    val distanceArrondie = (distanceEntre / 1000).roundToInt()
+                    if (distanceArrondie < 50) {//WIN
+                        startWinActivity(isWin(counterMaker))
+                    } else if (!isWin(counterMaker)) {//LOOSE
+                        startWinActivity(false)
+                    }
+                    mapTextView.text = "Vous êtes à ${distanceArrondie}km de $capitalName"
+
+                }
+
+            }
+
+
+        }
+    }
+
+
+    private fun getAddressCapital(): Result? {
+        var address: Address? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            address = intent.getSerializableExtra("capitalAddress", Address::class.java)
+        } else {
+            intent.getStringExtra("capitalAddress")?.let {
+                address = Klaxon().parse<Address>(it)
             }
         }
+        return getFirstResult(address)
+    }
 
-
-        // define function to add marker at given lat & lng
-        fun addMarker(latLng: LatLng,findCityCoordonate : LongitudeLatitude ): Float {
-            mMap.clear()
-            mMap.addMarker(MarkerOptions().position(latLng))
-            val startPoint = Location("locationA")
-            startPoint.latitude = latLng.latitude
-            startPoint.longitude = latLng.longitude
-            val endPoint = Location("locationB")
-            endPoint.latitude = findCityCoordonate.lat
-            endPoint.longitude = findCityCoordonate.lng
-            return startPoint.distanceTo(endPoint)
-        }
-
-        mMap.setOnMapClickListener {
-            val distanceEntre = addMarker(it, locationCapital!!)
-
-            val distanceArrondie = (distanceEntre/1000).roundToInt()
-            if(distanceArrondie < 50){
-                val victoryIntent =
-                    Intent(this@MapsActivity, VictoryActivity::class.java)
-                    startActivity(victoryIntent)
+    private fun getAddressCountry(): Result? {
+        var address: Address? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            address = intent.getSerializableExtra("address", Address::class.java)
+        } else {
+            intent.getStringExtra("address")?.let {
+                address = Klaxon().parse<Address>(it)
             }
-            map_text_view.setText("Vous êtes à " + distanceArrondie + "km de " + capitalName)
-
         }
+        return getFirstResult(address)
+    }
+
+    private fun getFirstResult(address: Address?): Result? {
+        address?.let { addressNotNull ->
+            if (addressNotNull.results.isNotEmpty()) {
+                return addressNotNull.results[0]
+            }
+        }
+        return null
+    }
 
 
+    private fun isWin(counterMarker: Int): Boolean {
+        return counterMarker < 5
+    }
+
+    private fun startWinActivity(isWin: Boolean) {
+        val victoryIntent = Intent(this@MapsActivity, VictoryActivity::class.java)
+        victoryIntent.putExtra(VictoryActivity.WIN_EXTRA, isWin)
+        startActivity(victoryIntent)
+        finish()
+    }
+
+    // define function to add marker at given lat & lng
+    private fun addMarker(latLng: LatLng, findCityLocation: LongitudeLatitude): Float {
+        counterMaker++
+        mMap.clear()
+        mMap.addMarker(MarkerOptions().position(latLng))
+        val startPoint = Location("locationA")
+        startPoint.latitude = latLng.latitude
+        startPoint.longitude = latLng.longitude
+        val endPoint = Location("locationB")
+        endPoint.latitude = findCityLocation.lat
+        endPoint.longitude = findCityLocation.lng
+        return startPoint.distanceTo(endPoint)
     }
 }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.Klaxon
@@ -38,7 +37,6 @@ class CountryActivity : AppCompatActivity() {
 
         result.let { countries ->
             val adapterCountry = CountryAdapter(countries.toMutableList()) {
-                Toast.makeText(applicationContext, it.countryCode, Toast.LENGTH_SHORT).show()
 
                 GlobalScope.launch {
                     googleAPI.getAddress(it.countryNameEn).body()?.let { address ->

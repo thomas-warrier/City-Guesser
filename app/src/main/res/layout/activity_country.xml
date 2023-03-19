@@ -6,23 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".country.CountryActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="60px"
-        android:layout_height="60px"
-        android:layout_marginEnd="-14dp"
-        app:layout_constraintEnd_toStartOf="@+id/app_name"
-        app:layout_constraintTop_toTopOf="@+id/app_name"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
-
     <TextView
         android:id="@+id/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="City Guesser"
-        android:textColor="@color/black"
         android:textSize="32sp"
+        android:textColor="?colorOnSecondary"
         app:fontFamily="@font/roboto_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +38,7 @@
         android:layout_height="0dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar" >
+        app:layout_constraintTop_toBottomOf="@id/search_bar">
 
     </androidx.recyclerview.widget.RecyclerView>
 
