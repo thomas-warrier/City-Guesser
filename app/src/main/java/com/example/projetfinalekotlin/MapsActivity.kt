@@ -72,7 +72,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             addressCapitalNullable?.let { addressCapital ->
                 val locationCapital = addressCapital.geometry.location
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(0.0, .0), 0f))
-                Timer().schedule(1000) {
+                Timer().schedule(300) {
                     runOnUiThread {
 
                         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0))
