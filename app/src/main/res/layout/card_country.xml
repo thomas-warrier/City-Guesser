@@ -31,22 +31,11 @@
             android:textColor="?colorOnSecondary"
             android:textSize="20sp"
             app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toTopOf="@id/countryCode"
+            app:layout_constraintBottom_toTopOf="@id/captialName"
             app:layout_constraintEnd_toStartOf="@id/image"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <TextView
-            android:id="@+id/countryCode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toTopOf="@id/captialName"
-            app:layout_constraintEnd_toStartOf="@id/image"
-            app:layout_constraintStart_toEndOf="@id/countryLogo"
-            app:layout_constraintTop_toBottomOf="@id/name" />
 
         <TextView
             android:id="@+id/captialName"
@@ -57,7 +46,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/image"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
-            app:layout_constraintTop_toBottomOf="@id/countryCode" />
+            app:layout_constraintTop_toBottomOf="@id/name" />
 
 
         <ImageView

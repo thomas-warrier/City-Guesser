@@ -40,7 +40,6 @@ class CountryAdapter(
         val country = filtredList[position]
 
         holder.name.text = country.countryNameFr
-        holder.countryCode.text = "code : ${country.countryCode.uppercase()}"
 
         SaveData.getBoolean(holder.view.context, country.countryCode)
             ?.let { isAlreadyHaveBeenDone ->
