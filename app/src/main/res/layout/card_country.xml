@@ -32,7 +32,7 @@
             android:textSize="20sp"
             app:fontFamily="@font/roboto"
             app:layout_constraintBottom_toTopOf="@id/countryCode"
-            app:layout_constraintEnd_toStartOf="@id/trophy_image"
+            app:layout_constraintEnd_toStartOf="@id/image"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +44,7 @@
             android:textAlignment="center"
             app:fontFamily="@font/roboto"
             app:layout_constraintBottom_toTopOf="@id/captialName"
-            app:layout_constraintEnd_toStartOf="@id/trophy_image"
+            app:layout_constraintEnd_toStartOf="@id/image"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toBottomOf="@id/name" />
 
@@ -55,13 +55,13 @@
             android:textAlignment="center"
             app:fontFamily="@font/roboto"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/trophy_image"
+            app:layout_constraintEnd_toStartOf="@id/image"
             app:layout_constraintStart_toEndOf="@id/countryLogo"
             app:layout_constraintTop_toBottomOf="@id/countryCode" />
 
 
         <ImageView
-            android:id="@+id/trophy_image"
+            android:id="@+id/image"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@mipmap/trophy_cup_foreground"

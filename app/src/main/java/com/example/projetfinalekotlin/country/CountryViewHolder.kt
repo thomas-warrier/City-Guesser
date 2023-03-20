@@ -23,7 +23,7 @@ class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             capitalName = findViewById(R.id.captialName)
             countryCode = findViewById(R.id.countryCode)
             countryLogo = findViewById(R.id.countryLogo)
-            trophyImage = findViewById(R.id.trophy_image)
+            trophyImage = findViewById(R.id.image)
             view = this
         }
 
