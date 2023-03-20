@@ -10,7 +10,6 @@ import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.data.SaveData
 import com.example.projetfinalekotlin.retrofit.Address
 import com.example.projetfinalekotlin.retrofit.LongitudeLatitude
-import com.example.projetfinalekotlin.retrofit.Result
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -101,7 +100,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    private fun getAddressCapital(): Result? {
+    private fun getAddressCapital(): Address? {
         var address: Address? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             address = intent.getSerializableExtra(ADDRESS_CAPITAL_EXTRA, Address::class.java)
@@ -110,10 +109,10 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 address = Klaxon().parse<Address>(it)
             }
         }
-        return getFirstResult(address)
+        return address
     }
 
-    private fun getAddressCountry(): Result? {
+    private fun getAddressCountry(): Address? {
         var address: Address? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             address = intent.getSerializableExtra(ADDRESS_COUNTRY_EXTRA, Address::class.java)
@@ -122,16 +121,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 address = Klaxon().parse<Address>(it)
             }
         }
-        return getFirstResult(address)
-    }
-
-    private fun getFirstResult(address: Address?): Result? {
-        address?.let { addressNotNull ->
-            if (addressNotNull.results.isNotEmpty()) {
-                return addressNotNull.results[0]
-            }
-        }
-        return null
+        return address
     }
 
 
