@@ -86,7 +86,7 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     val distanceArrondie = (distanceEntre / 1000).roundToInt()
                     if (distanceArrondie < 50) {//WIN
-                        startWinActivity(isWin(counterMaker), countryCode)
+                        startWinActivity(true, countryCode)
                     } else if (!isWin(counterMaker)) {//LOOSE
                         startWinActivity(false, countryCode)
                     }
