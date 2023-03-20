@@ -7,6 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
 import com.example.projetfinalekotlin.data.SaveData
+import com.example.projetfinalekotlin.retrofit.RetrofitHackerrankHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CountryAdapter(
     private val countryList: MutableList<Country>,
@@ -37,6 +42,7 @@ class CountryAdapter(
         ImageLoading.loadFlagInto(country.countryCode, holder.countryLogo)
 
         holder.name.text = country.countryNameFr
+        holder.countryCode.text = "code : ${country.countryCode.uppercase()}"
 
         SaveData.getBoolean(holder.view.context, country.countryCode)
             ?.let { isAlreadyHaveBeenDone ->
@@ -46,6 +52,19 @@ class CountryAdapter(
                     holder.trophyImage.visibility = View.INVISIBLE
                 }
             }
+
+        GlobalScope.launch {
+            RetrofitHackerrankHelper.getAPIInstance().getCapital(country.countryNameEn).body()
+                ?.let { dataCapital ->
+                    if (dataCapital.data.isNotEmpty()) {
+                        val info = dataCapital.data[0]
+                        withContext(Dispatchers.Main) {
+                            holder.capitalName.text = "capital : ${info.capital}"
+                        }
+                    }
+
+                }
+        }
     }
 
     fun setFilter(newFiltre: String) {

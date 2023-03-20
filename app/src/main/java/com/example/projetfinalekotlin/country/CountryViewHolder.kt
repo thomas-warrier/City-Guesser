@@ -8,18 +8,19 @@ import com.example.projetfinalekotlin.R
 
 class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val name: TextView
-    val nativeName: TextView
-    val region: TextView
+    val countryCode: TextView
+    val capitalName: TextView
     val countryLogo: ImageView
     val trophyImage: ImageView
+
     val view: View
 
 
     init {
         itemView.apply {
             name = findViewById(R.id.name)
-            nativeName = findViewById(R.id.nativeName)
-            region = findViewById(R.id.region)
+            capitalName = findViewById(R.id.captialName)
+            countryCode = findViewById(R.id.countryCode)
             countryLogo = findViewById(R.id.countryLogo)
             trophyImage = findViewById(R.id.trophy_image)
             view = this
