@@ -1,5 +1,7 @@
 package com.example.projetfinalekotlin.country
 
+import android.app.AlertDialog
+import android.app.AlertDialog.THEME_HOLO_LIGHT
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.MapsActivity
+import com.example.projetfinalekotlin.R
 import com.example.projetfinalekotlin.Utils
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
 import com.example.projetfinalekotlin.retrofit.GoogleAPI
@@ -104,5 +107,15 @@ class CountryActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         adapterCountry?.notifyDataSetChanged()
+    }
+
+    fun modalWindow(view: android.view.View){
+        val dialog = AlertDialog.Builder(this@CountryActivity)
+        dialog.setTitle("Explications du jeu")
+        dialog.setMessage("Le but du jeu est de trouver le pays correspondant à la capitale affichée. \nPour cela, il vous suffit de cliquer sur le bouton \"Jouer\". \nVous avez 5 essais pour trouver la bonne réponse.\nBonne chance !")
+        dialog.setPositiveButton("C'est parti") { dialog, which ->
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }
