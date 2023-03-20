@@ -1,6 +1,5 @@
 package com.example.projetfinalekotlin.country
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
 import com.example.projetfinalekotlin.data.SaveData
+import com.example.projetfinalekotlin.retrofit.CountryFromAPI
 import com.example.projetfinalekotlin.retrofit.RetrofitCountryCodeHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 class CountryAdapter(
     private val countryList: MutableList<Country>,
-    val onClick: (country: Country) -> Unit
+    val onClick: (country: Country, info: CountryFromAPI) -> Unit
 ) :
     RecyclerView.Adapter<CountryViewHolder>() {
 
@@ -37,10 +37,6 @@ class CountryAdapter(
 
     override fun onBindViewHolder(holder: CountryViewHolder, position: Int) {
         val country = filtredList[position]
-        holder.view.setOnClickListener {
-            onClick(country)
-        }
-
 
         holder.name.text = country.countryNameFr
         holder.countryCode.text = "code : ${country.countryCode.uppercase()}"
@@ -54,14 +50,27 @@ class CountryAdapter(
                 }
             }
 
+
+        holder.view.setOnClickListener {
+            //pendant le chargement de l'api si click dessus => retien et click auto lorsqu'es les info sont chargé
+            holder.mustClickOnIt = true
+        }
         GlobalScope.launch {
-            RetrofitCountryCodeHelper.getAPIInstance().getInfoISO3(country.countryCode.uppercase()).body()
+            RetrofitCountryCodeHelper.getAPIInstance().getInfoISO3(country.countryCode.uppercase())
+                .body()
                 ?.let { listCountry ->
                     if (listCountry.isNotEmpty()) {
                         val info = listCountry[0]
                         withContext(Dispatchers.Main) {
                             holder.capitalName.text = "capital : ${info.capital_city}"
                             ImageLoading.loadFlagInto(info.ISO2, holder.countryLogo)
+                        }
+                        holder.view.setOnClickListener {
+                            onClick(country, info)
+                        }
+
+                        if (holder.mustClickOnIt) {
+                            onClick(country, info)
                         }
                     }
 

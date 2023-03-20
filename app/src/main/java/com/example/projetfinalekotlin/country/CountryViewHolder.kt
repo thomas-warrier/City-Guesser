@@ -12,11 +12,13 @@ class CountryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val capitalName: TextView
     val countryLogo: ImageView
     val trophyImage: ImageView
+    var mustClickOnIt: Boolean
 
     val view: View
 
 
     init {
+        mustClickOnIt = false
         itemView.apply {
             name = findViewById(R.id.name)
             capitalName = findViewById(R.id.captialName)

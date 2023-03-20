@@ -5,14 +5,13 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.MapsActivity
 import com.example.projetfinalekotlin.Utils
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
-import com.example.projetfinalekotlin.retrofit.RetrofitCountryCodeHelper
+import com.example.projetfinalekotlin.retrofit.CountryFromAPI
 import com.example.projetfinalekotlin.retrofit.RetrofitGoogleHelper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,67 +28,13 @@ class CountryActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val googleAPI = RetrofitGoogleHelper.getAPIInstance()
-        val countryAPI = RetrofitCountryCodeHelper.getAPIInstance()
-
 
         val countries = Utils.getJsonFromKlaxon().toMutableList()
 
 
-        adapterCountry = CountryAdapter(countries.toMutableList()) {
+        adapterCountry = CountryAdapter(countries.toMutableList()) { country, info ->
 
-            GlobalScope.launch {
-                googleAPI.getAddress(it.countryNameEn).body()?.let { address ->
-                    countryAPI.getInfoISO3(it.countryCode.uppercase()).body()?.let { listCountry ->
-
-                        if (listCountry.isEmpty()) {
-                            runOnUiThread {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Désolé, nous n'avons pas pu trouver les informations ce pays.",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-                        } else {
-                            val info = listCountry[0]
-                            googleAPI.getAddress(info.capital_city).body()?.let { capitalAddress ->
-                                val mapIntent =
-                                    Intent(this@CountryActivity, MapsActivity::class.java)
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_COUNTRY_EXTRA,
-                                        address
-                                    )
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_CAPITAL_EXTRA,
-                                        capitalAddress
-                                    )
-
-                                } else {
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_COUNTRY_EXTRA,
-                                        Klaxon().toJsonString(address)
-                                    )
-                                    mapIntent.putExtra(
-                                        MapsActivity.ADDRESS_CAPITAL_EXTRA,
-                                        Klaxon().toJsonString(capitalAddress)
-                                    )
-                                }
-                                mapIntent.putExtra(
-                                    MapsActivity.CAPITAL_NAME_EXTRA,
-                                    info.capital_city
-                                )
-                                mapIntent.putExtra(
-                                    MapsActivity.COUNTRY_CODE_EXTRA,
-                                    it.countryCode
-                                )
-                                startActivity(mapIntent)
-                            }
-                        }
-                    }
-                }
-            }
+            startMapsFoCountry(country, info)
 
         }
 
@@ -117,6 +62,49 @@ class CountryActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun startMapsFoCountry(country: Country, info: CountryFromAPI) {
+        GlobalScope.launch {
+            RetrofitGoogleHelper.getAPIInstance().getAddress(country.countryNameEn).body()
+                ?.let { address ->
+                    RetrofitGoogleHelper.getAPIInstance().getAddress(info.capital_city).body()
+                        ?.let { capitalAddress ->
+                            val mapIntent =
+                                Intent(this@CountryActivity, MapsActivity::class.java)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_COUNTRY_EXTRA,
+                                    address
+                                )
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_CAPITAL_EXTRA,
+                                    capitalAddress
+                                )
+
+                            } else {
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_COUNTRY_EXTRA,
+                                    Klaxon().toJsonString(address)
+                                )
+                                mapIntent.putExtra(
+                                    MapsActivity.ADDRESS_CAPITAL_EXTRA,
+                                    Klaxon().toJsonString(capitalAddress)
+                                )
+                            }
+                            mapIntent.putExtra(
+                                MapsActivity.CAPITAL_NAME_EXTRA,
+                                info.capital_city
+                            )
+                            mapIntent.putExtra(
+                                MapsActivity.COUNTRY_CODE_EXTRA,
+                                country.countryCode
+                            )
+                            startActivity(mapIntent)
+                        }
+
+                }
+        }
     }
 
     override fun onResume() {
