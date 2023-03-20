@@ -55,26 +55,30 @@ class CountryAdapter(
             //pendant le chargement de l'api si click dessus => retien et click auto lorsqu'es les info sont chargé
             holder.mustClickOnIt = true
         }
-        GlobalScope.launch {
-            RetrofitCountryCodeHelper.getAPIInstance().getInfoISO3(country.countryCode.uppercase())
-                .body()
-                ?.let { listCountry ->
-                    if (listCountry.isNotEmpty()) {
-                        val info = listCountry[0]
-                        withContext(Dispatchers.Main) {
-                            holder.capitalName.text = "capital : ${info.capital_city}"
-                            ImageLoading.loadFlagInto(info.ISO2, holder.countryLogo)
-                        }
-                        holder.view.setOnClickListener {
-                            onClick(country, info)
+        try {
+            GlobalScope.launch {
+                RetrofitCountryCodeHelper.getAPIInstance().getInfoISO3(country.countryCode.uppercase())
+                    .body()
+                    ?.let { listCountry ->
+                        if (listCountry.isNotEmpty()) {
+                            val info = listCountry[0]
+                            withContext(Dispatchers.Main) {
+                                holder.capitalName.text = "capital : ${info.capital_city}"
+                                ImageLoading.loadFlagInto(info.ISO2, holder.countryLogo)
+                            }
+                            holder.view.setOnClickListener {
+                                onClick(country, info)
+                            }
+
+                            if (holder.mustClickOnIt) {
+                                onClick(country, info)
+                            }
                         }
 
-                        if (holder.mustClickOnIt) {
-                            onClick(country, info)
-                        }
                     }
+            }
+        }catch (_:java.lang.Exception){
 
-                }
         }
     }
 
