@@ -76,7 +76,12 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (FirebaseAuth.getInstance().currentUser != null) {
+        val currUser = FirebaseAuth.getInstance().currentUser
+        if (currUser != null) {
+            Toast.makeText(
+                applicationContext,
+                "Vous êtes connecté en tant que : ${currUser.displayName}", Toast.LENGTH_LONG
+            ).show()
             startMainActivity()
         }
     }
