@@ -17,6 +17,7 @@ import com.example.projetfinalekotlin.retrofit.GoogleAPI
 import com.example.projetfinalekotlin.retrofit.HackerrankAPIAPI
 import com.example.projetfinalekotlin.retrofit.RetrofitGoogleHelper
 import com.example.projetfinalekotlin.retrofit.RetrofitHackerrankHelper
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -31,7 +32,6 @@ class CountryActivity : AppCompatActivity() {
         binding = ActivityCountryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
 
         val googleAPI = RetrofitGoogleHelper.getInstance().create(GoogleAPI::class.java)
         val capitalAPI = RetrofitHackerrankHelper.getInstance().create(HackerrankAPIAPI::class.java)
