@@ -10,11 +10,13 @@ object ImageLoading {
     //private const val URLImage = "https://www.countryflagsapi.com/png/"
 
     fun loadFlagInto(countryCode: String, imageView: ImageView) {
+
+        val url = "${URLImage}${countryCode.lowercase().subSequence(0, 2)}${END_URL_IMAGE}"
         Log.d(
             "FLAG",
-            "try to load ${URLImage}${countryCode.lowercase().subSequence(0, 2)}${END_URL_IMAGE}"
+            "try to load $url"
         )
-        Picasso.get().load("${URLImage}${countryCode}").apply {
+        Picasso.get().load(url).apply {
             placeholder(R.drawable.default_flag)
             error(R.drawable.default_flag)
             into(imageView)

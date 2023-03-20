@@ -12,8 +12,8 @@ import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.MapsActivity
 import com.example.projetfinalekotlin.Utils
 import com.example.projetfinalekotlin.databinding.ActivityCountryBinding
+import com.example.projetfinalekotlin.retrofit.RetrofitCountryCodeHelper
 import com.example.projetfinalekotlin.retrofit.RetrofitGoogleHelper
-import com.example.projetfinalekotlin.retrofit.RetrofitHackerrankHelper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -30,7 +30,7 @@ class CountryActivity : AppCompatActivity() {
         setContentView(view)
 
         val googleAPI = RetrofitGoogleHelper.getAPIInstance()
-        val capitalAPI = RetrofitHackerrankHelper.getAPIInstance()
+        val countryAPI = RetrofitCountryCodeHelper.getAPIInstance()
 
 
         val countries = Utils.getJsonFromKlaxon().toMutableList()
@@ -40,24 +40,27 @@ class CountryActivity : AppCompatActivity() {
 
             GlobalScope.launch {
                 googleAPI.getAddress(it.countryNameEn).body()?.let { address ->
-                    capitalAPI.getCapital(it.countryNameEn).body()?.let { dataCapital ->
-                        if (dataCapital.data.isEmpty()) {
-                            runOnUiThread() {
+                    countryAPI.getInfoISO3(it.countryCode.uppercase()).body()?.let { listCountry ->
+
+                        if (listCountry.isEmpty()) {
+                            runOnUiThread {
                                 Toast.makeText(
                                     applicationContext,
-                                    "Désolé, nous n'avons pas pu trouver la capitale de ce pays.",
+                                    "Désolé, nous n'avons pas pu trouver les informations ce pays.",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
 
                         } else {
-
-                            val info = dataCapital.data[0]
-                            googleAPI.getAddress(info.capital).body()?.let { capitalAddress ->
+                            val info = listCountry[0]
+                            googleAPI.getAddress(info.capital_city).body()?.let { capitalAddress ->
                                 val mapIntent =
                                     Intent(this@CountryActivity, MapsActivity::class.java)
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    mapIntent.putExtra(MapsActivity.ADDRESS_COUNTRY_EXTRA, address)
+                                    mapIntent.putExtra(
+                                        MapsActivity.ADDRESS_COUNTRY_EXTRA,
+                                        address
+                                    )
                                     mapIntent.putExtra(
                                         MapsActivity.ADDRESS_CAPITAL_EXTRA,
                                         capitalAddress
@@ -73,13 +76,17 @@ class CountryActivity : AppCompatActivity() {
                                         Klaxon().toJsonString(capitalAddress)
                                     )
                                 }
-                                mapIntent.putExtra(MapsActivity.CAPITAL_NAME_EXTRA, info.capital)
-                                mapIntent.putExtra(MapsActivity.COUNTRY_CODE_EXTRA, it.countryCode)
+                                mapIntent.putExtra(
+                                    MapsActivity.CAPITAL_NAME_EXTRA,
+                                    info.capital_city
+                                )
+                                mapIntent.putExtra(
+                                    MapsActivity.COUNTRY_CODE_EXTRA,
+                                    it.countryCode
+                                )
                                 startActivity(mapIntent)
                             }
-
                         }
-
                     }
                 }
             }

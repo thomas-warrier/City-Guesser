@@ -1,5 +1,6 @@
 package com.example.projetfinalekotlin.country
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
 import com.example.projetfinalekotlin.data.SaveData
-import com.example.projetfinalekotlin.retrofit.RetrofitHackerrankHelper
+import com.example.projetfinalekotlin.retrofit.RetrofitCountryCodeHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class CountryAdapter(
         holder.view.setOnClickListener {
             onClick(country)
         }
-        ImageLoading.loadFlagInto(country.countryCode, holder.countryLogo)
+
 
         holder.name.text = country.countryNameFr
         holder.countryCode.text = "code : ${country.countryCode.uppercase()}"
@@ -54,12 +55,13 @@ class CountryAdapter(
             }
 
         GlobalScope.launch {
-            RetrofitHackerrankHelper.getAPIInstance().getCapital(country.countryNameEn).body()
-                ?.let { dataCapital ->
-                    if (dataCapital.data.isNotEmpty()) {
-                        val info = dataCapital.data[0]
+            RetrofitCountryCodeHelper.getAPIInstance().getInfoISO3(country.countryCode.uppercase()).body()
+                ?.let { listCountry ->
+                    if (listCountry.isNotEmpty()) {
+                        val info = listCountry[0]
                         withContext(Dispatchers.Main) {
-                            holder.capitalName.text = "capital : ${info.capital}"
+                            holder.capitalName.text = "capital : ${info.capital_city}"
+                            ImageLoading.loadFlagInto(info.ISO2, holder.countryLogo)
                         }
                     }
 

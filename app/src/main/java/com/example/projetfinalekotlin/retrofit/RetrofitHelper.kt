@@ -4,6 +4,29 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
+object RetrofitCountryCodeHelper {
+
+
+    private var instance: CountryCodeAPI? = null
+
+    fun getAPIInstance(): CountryCodeAPI {
+        if (instance == null) {
+            instance = getInstance().create(CountryCodeAPI::class.java)
+        }
+        return instance!!
+    }
+
+    private const val baseUrl =
+        "https://countrycode.dev/api/"
+
+
+    private fun getInstance(): Retrofit {
+        return Retrofit.Builder().baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+}
+
 object RetrofitGoogleHelper {
 
 
@@ -20,28 +43,7 @@ object RetrofitGoogleHelper {
         "https://maps.googleapis.com/maps/api/geocode/"
 
 
-    fun getInstance(): Retrofit {
-        return Retrofit.Builder().baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-}
-
-object RetrofitHackerrankHelper {
-
-    private var instance: HackerrankAPIAPI? = null
-
-    fun getAPIInstance(): HackerrankAPIAPI {
-        if (instance == null) {
-            instance = getInstance().create(HackerrankAPIAPI::class.java)
-        }
-        return instance!!
-    }
-
-    private const val baseUrl =
-        "https://jsonmock.hackerrank.com/api/"
-
-    fun getInstance(): Retrofit {
+    private fun getInstance(): Retrofit {
         return Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
