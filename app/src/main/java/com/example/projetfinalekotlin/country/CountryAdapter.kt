@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projetfinalekotlin.ImageLoading
 import com.example.projetfinalekotlin.R
+import com.example.projetfinalekotlin.Utils
 import com.example.projetfinalekotlin.data.SaveData
 import com.example.projetfinalekotlin.retrofit.CountryFromAPI
 import com.example.projetfinalekotlin.retrofit.RetrofitCountryCodeHelper
@@ -55,9 +56,10 @@ class CountryAdapter(
             //pendant le chargement de l'api si click dessus => retien et click auto lorsqu'es les info sont chargé
             holder.mustClickOnIt = true
         }
-        try {
+        if (Utils.isInternetAvailable()) {
             GlobalScope.launch {
-                RetrofitCountryCodeHelper.getAPIInstance().getInfoISO3(country.countryCode.uppercase())
+                RetrofitCountryCodeHelper.getAPIInstance()
+                    .getInfoISO3(country.countryCode.uppercase())
                     .body()
                     ?.let { listCountry ->
                         if (listCountry.isNotEmpty()) {
@@ -77,8 +79,6 @@ class CountryAdapter(
 
                     }
             }
-        }catch (_:java.lang.Exception){
-
         }
     }
 

@@ -54,9 +54,7 @@ class LoginActivity : AppCompatActivity() {
                     firebaseAuth.signInWithCredential(credential)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                val intentSign = Intent(this, CountryActivity::class.java)
-                                startActivity(intentSign)
-                                finish()
+                                startMainActivity()
                             } else {
                                 Toast.makeText(
                                     this,
@@ -79,10 +77,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (FirebaseAuth.getInstance().currentUser != null) {
-            val intentSign = Intent(this, CountryActivity::class.java)
-            startActivity(intentSign)
-            finish()
+            startMainActivity()
         }
     }
 
+    private fun startMainActivity() {
+        val intentSign = Intent(this, CountryActivity::class.java)
+        startActivity(intentSign)
+        finish()
+    }
 }

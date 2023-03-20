@@ -4,10 +4,8 @@ import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.country.Countries
 import com.example.projetfinalekotlin.country.Country
-import com.google.android.gms.maps.model.LatLng
 import java.io.StringReader
-import kotlin.math.pow
-import kotlin.math.sqrt
+import java.net.InetAddress
 
 
 object Utils {
@@ -25,9 +23,13 @@ object Utils {
         return countriesArray
     }
 
-    fun calculateDistance(latLngClick: LatLng, latLngCity: LatLng): Double {
-        val distLat = latLngClick.latitude - latLngCity.latitude
-        val distLong = latLngClick.longitude - latLngCity.longitude
-        return sqrt(distLat.pow(2.0) + distLong.pow(2.0))
+    fun isInternetAvailable(): Boolean {
+        return try {
+            val ipAddr: InetAddress = InetAddress.getByName("google.com")
+            //You can replace it with your name
+            !ipAddr.equals("")
+        } catch (e: Exception) {
+            false
+        }
     }
 }

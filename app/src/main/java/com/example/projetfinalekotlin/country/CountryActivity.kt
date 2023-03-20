@@ -66,6 +66,10 @@ class CountryActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@CountryActivity)
         }
 
+        if (!Utils.isInternetAvailable()) {
+            showMessageErrorNetwork()
+        }
+
 
     }
 
@@ -145,12 +149,29 @@ class CountryActivity : AppCompatActivity() {
         adapterCountry?.notifyDataSetChanged()
     }
 
-    fun modalWindow(view: android.view.View) {
+    fun modalWindow() {
         val dialog = AlertDialog.Builder(this@CountryActivity)
         dialog.setTitle("Explications du jeu")
         dialog.setMessage("Le but du jeu est de trouver le pays correspondant à la capitale affichée. \nPour cela, il vous suffit de cliquer sur le bouton \"Jouer\". \nVous avez 5 essais pour trouver la bonne réponse.\nBonne chance !")
         dialog.setPositiveButton("C'est parti") { dialog, which ->
             dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showMessageErrorNetwork() {
+
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("Erreur de connexion")
+        dialog.setMessage("Vous n'avez pas de connexion internet valide, veuillez jouer plus tard.")
+        dialog.setPositiveButton("OK") { dialog, which ->
+            finish()
+        }
+        dialog.setOnCancelListener {
+            finish()
+        }
+        dialog.setOnDismissListener {
+            finish()
         }
         dialog.show()
     }
