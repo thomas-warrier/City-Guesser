@@ -2,6 +2,7 @@ package com.example.projetfinalekotlin.country
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.SearchView
@@ -66,11 +67,13 @@ class CountryActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@CountryActivity)
         }
 
-        if (!Utils.isInternetAvailable()) {
+        val connectivityManager: ConnectivityManager = getSystemService(
+            CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+
+        if (!Utils.isNetworkAvailable(this)) {
             showMessageErrorNetwork()
         }
-
-
     }
 
     private fun startMapsFoCountry(country: Country, info: CountryFromAPI) {

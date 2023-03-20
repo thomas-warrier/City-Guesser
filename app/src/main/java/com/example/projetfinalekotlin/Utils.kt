@@ -1,11 +1,14 @@
 package com.example.projetfinalekotlin
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import com.example.projetfinalekotlin.country.Countries
 import com.example.projetfinalekotlin.country.Country
 import java.io.StringReader
-import java.net.InetAddress
 
 
 object Utils {
@@ -23,13 +26,24 @@ object Utils {
         return countriesArray
     }
 
-    fun isInternetAvailable(): Boolean {
-        return try {
-            val ipAddr: InetAddress = InetAddress.getByName("google.com")
-            //You can replace it with your name
-            !ipAddr.equals("")
-        } catch (e: Exception) {
-            false
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nw = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        } else {
+            val nwInfo = connectivityManager.activeNetworkInfo ?: return false
+            return nwInfo.isConnected
         }
     }
 }

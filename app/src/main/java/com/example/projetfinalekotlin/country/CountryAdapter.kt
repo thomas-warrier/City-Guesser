@@ -56,7 +56,7 @@ class CountryAdapter(
             //pendant le chargement de l'api si click dessus => retien et click auto lorsqu'es les info sont chargé
             holder.mustClickOnIt = true
         }
-        if (Utils.isInternetAvailable()) {
+        if (Utils.isNetworkAvailable(holder.view.context)) {
             GlobalScope.launch {
                 RetrofitCountryCodeHelper.getAPIInstance()
                     .getInfoISO3(country.countryCode.uppercase())
