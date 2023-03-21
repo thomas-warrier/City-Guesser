@@ -87,8 +87,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun startMainActivity() {
-        val intentSign = Intent(this, CountryActivity::class.java)
-        startActivity(intentSign)
-        finish()
+        val currUser = FirebaseAuth.getInstance().currentUser
+        if (currUser != null) {
+            Toast.makeText(
+                applicationContext,
+                "Vous êtes connecté en tant que : ${currUser.displayName}", Toast.LENGTH_LONG
+            ).show()
+            val intentSign = Intent(this, CountryActivity::class.java)
+            startActivity(intentSign)
+            finish()
+        }
+
     }
 }
