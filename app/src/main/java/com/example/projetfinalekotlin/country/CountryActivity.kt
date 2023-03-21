@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -152,7 +153,7 @@ class CountryActivity : AppCompatActivity() {
         adapterCountry?.notifyDataSetChanged()
     }
 
-    fun modalWindow() {
+    fun modalWindow(view: View) {
         val dialog = AlertDialog.Builder(this@CountryActivity)
         dialog.setTitle("Explications du jeu")
         dialog.setMessage("Le but du jeu est de trouver le pays correspondant à la capitale affichée. \nPour cela, il vous suffit de cliquer sur le bouton \"Jouer\". \nVous avez 5 essais pour trouver la bonne réponse.\nBonne chance !")
